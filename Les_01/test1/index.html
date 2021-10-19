@@ -1,0 +1,113 @@
+/<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script >
+    // const months = ['March', 'Jan', 'Feb', 'Dec'];
+    // months.sort();
+    //
+    // const points = [40, 100, 1, 5, 25, 10];
+    // points.sort(function(a, b){return b - a});
+    //const cars = [
+  //{type:"Volvo", year:2016},
+  //{type:"Saab", year:2001},
+  //{type:"BMW", year:2010}
+//];
+//cars.sort(function(a, b){return a.year - b.year});
+    //
+    //  let numbers = [10, 40, 5, 15, -5, 25, 2, 5, 6];
+    // let someNumbers = numbers.filter(item => item > 5);
+    //
+    // let value = numbers.reduce(function(previousValue, item, index, array) {
+    //     // ...
+    // }
+    //
+    // Array.isArray(numbers);
+    // numbers.forEach( (element, index, array) => console.log(element));
+    // let newArray = numbers.map(item => item *0.5);
+    //
+    //
+    // let value1 = numbers.reduce((previousValue, item) => previousValue + item, 0);
+    //
+    //
+    //
+    // // Function Declaration
+    // function sum1(a, b ) {
+    //     return a + b;
+    //     let message = 'Hi'
+    // }
+    // console.log(message)
+    //
+    // // Function Expression
+    // let sum2 = function(a, b) {
+    //     return a + b;
+    // };
+    
+        function sum(a, b = 25){
+            return a + b;
+        }
+
+    //
+    // let sum3 = (a, b) => a + b;
+    // let sum4 = (a, b) => {
+    //     return a + b;
+    // }
+    //
+    // console.log(sum3(5, 7))
+    //
+    // function checkAge(age) {
+    //     if (age > 18) {
+    //         return true;
+    //     }
+    //     // ...
+    //     return confirm('Родители разрешили?');
+    // }
+    //
+    // const factorial = function fac(n) { return n < 2 ? 1 : n * fac(n - 1) }
+    // console.log('factorial',factorial(5))
+    // //Факторіал натурального числа — добуток натуральних чисел від одиниці до n включно
+    function pow(x, n){
+        if(n==1){
+            return x;
+        } else {
+            return x * pow(x, n - 1);
+        }
+    }
+console.log(pow(2, 3))
+
+</script>
+
+    <html>
+        <ul id="stations" name="stations">
+        </ul>
+    </html>
+</body>
+
+
+
+        // function sum(a, b = 15) {
+        //     return a + b
+        // }
+        /*   let sum = (a, b) => {
+            return   a+b
+           };*/
+
+
+        /*   let sum = function(a, b){
+               return a+b;
+           }*/
+        /**/ //console.log(sum(5, 15))
+        //
+        // let a = 10;
+        // function pow(x, n) {
+        //     console.log('a',a)
+        // }
+        //let  newArray =numbers.map((element) => element / 0.5)
+        //let newArray = numbers.filter(item => item > 10);
+        let newArray = numbers.reduce((previusValue, item, index, array) => previusValue + item, 0)
+        console.log(newArray)
+        // console.log((pow(2, 3)))

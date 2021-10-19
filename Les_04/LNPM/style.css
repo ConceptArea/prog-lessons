@@ -1,0 +1,62 @@
+table td, table tr, table th {
+    padding: 10px;
+}
+
+table th{
+    background-color: #adadad;
+}
+
+.active {
+    background-color: #b2cd9a;
+    cursor: pointer;
+}
+
+table {
+    border: 1px solid black;
+    font: 16px "Open Sans", Helvetica, Arial, sans-serif;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 30rem;
+    padding: 5px;
+}
+
+.detailStation {
+    margin-left: 100px;
+    padding: 5px;
+    display: none;
+    border: 1px solid black;
+}
+
+.header {
+    padding: 10px;
+}
+
+.body {
+    display: inline-flex;
+}
+
+.header > button {
+    padding: 5px 8px ;
+}
+
+.item-block {
+    display: flex;
+    width: 200px;
+    align-items: center;
+    padding: 10px;
+}
+
+.item-block > label {
+    font-weight: bold;
+    font-size: 1.3rem;
+    width: 150px;
+}
+
+.item-block > span {
+    flex: 1;
+    font-size: 1.5rem
+}
+
+.detailStation {
+    padding: 10px;
+}

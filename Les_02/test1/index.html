@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        table td {
+            padding: 5px;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .red {
+            background-color: red;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"   integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="   crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        async function getStations() {
+            let response = await fetch('http://192.168.42.172:8081/stations', {
+                method: 'GET',
+            });
+            generateTable(await response.json());
+        }
+
+        function generateTable(stations) {
+            let stationsTable = document.getElementById('stationsTable');
+            stationsTable.innerHTML = '';
+            stations.forEach(station => {
+                let tr = stationsTable.insertRow();
+                tr.className = station.status ? 'green' : 'red';
+                tr.insertCell().appendChild(document.createTextNode(station.id));
+                tr.insertCell().appendChild(document.createTextNode(station.address));
+                tr.insertCell().appendChild(document.createTextNode(station.status));
+            })
+        }
+
+        function refreshStations() {
+            $.get('http://192.168.42.172:8081/stations', (data) => {
+                $("tbody#stationsTable").empty();
+                data.map((station) => {
+                    const style = +station.status ? 'green' : 'red';
+
+                    const tr = $(`<tr class="${style}"/>`);
+                    tr.append(`<td>${station.id}</td>`);
+                    tr.append(`<td>${station.address}</td>`);
+                    tr.append(`<td>${station.status}</td>`);
+
+                    $("tbody#stationsTable").append(tr);
+                })
+            })
+        }
+    </script>
+
+</head>
+<body>
+<html>
+<ul id="stations" name="stations">
+</ul>
+<button onclick="getStations()">RefreshJS</button>
+<button onclick="refreshStations()">Refresh2</button>
+<table cellpadding="0" cellspacing="0">
+    <tr>
+        <th>Id</th>
+        <th>Address</th>
+        <th>Status</th>
+    </tr>
+    <tbody id="stationsTable">
+    <tr class="green">
+        <td>12</td>
+        <td>5 Mazepy, Drogobych</td>
+        <td>true</td>
+    </tr>
+    </tbody>
+</table>
+
+</html>
+</body>

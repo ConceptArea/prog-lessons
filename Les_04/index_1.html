@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        table td, table tr, table th {
+            padding: 10px;
+        }
+
+        table th{
+            background-color: #adadad;
+        }
+
+        .active {
+            background-color: #b2cd9a;
+            cursor: pointer;
+        }
+
+        table {
+            border: 1px solid black;
+            font: 16px "Open Sans", Helvetica, Arial, sans-serif;
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 30rem;
+            padding: 5px;
+        }
+
+        .detailStation {
+            margin-left: 100px;
+            padding: 5px;
+            display: none;
+            border: 1px solid black;
+        }
+
+        .header {
+            padding: 10px;
+        }
+
+        .body {
+            display: inline-flex;
+        }
+
+        .header > button {
+            padding: 5px 8px ;
+        }
+
+        .item-block {
+            display: flex;
+            width: 200px;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .item-block > label {
+            font-weight: bold;
+            font-size: 1.3rem;
+            width: 200px;
+        }
+
+        .item-block > span {
+            flex: 1;
+            font-size: 1.5rem
+        }
+
+        .detailStation {
+            padding: 10px;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"   integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="   crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function refreshStations() {
+            $.get('http://192.168.42.172:8082/stations', (data) => {
+                $("tbody#stationsTable").empty();
+                $("#detailStation").hide();
+                data.map((station) => {
+                    const style = +station.status ? 'active' : null;
+
+                    const tr = $(`<tr id=${station.id} class="${style}"/>`);
+                    if (station.status) {
+                        tr.click((e) => {
+                            $.get('http://192.168.42.172:8082/stations/' + station.id, (data) => {
+                                fillStationDetails(data);
+                            })
+                        })
+                    }
+                    tr.append(`<td>${station.id}</td>`);
+                    tr.append(`<td>${station.address}</td>`);
+                    tr.append(`<td>${station.status}</td>`);
+                    $("tbody#stationsTable").append(tr);
+                })
+            })
+        }
+
+        function fillStationDetails(data) {
+            $("#detailStation").show();
+            $("#stationId").text(`Station ${data.id}`);
+            $("#temperature").text(data.temperature);
+            $("#dose_rate").text(data.radiation.toFixed(3));
+        }
+    </script>
+
+</head>
+<body>
+<html>
+<div class='content'>
+    <div class="header">
+        <button onclick="refreshStations()">Refresh</button>
+    </div>
+    <div class="body">
+        <div>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <th>Id</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                </tr>
+                <tbody id="stationsTable">
+                </tbody>
+            </table>
+        </div>
+        <div class="detailStation" id="detailStation">
+            <h1 id="stationId"></h1>
+            <div class="item-block">
+                <label>Dose rate : </label>
+                <span id="dose_rate"></span>
+            </div>
+            <div class="item-block">
+                <label>Temperature : </label>
+                <span id="temperature"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
+</body>

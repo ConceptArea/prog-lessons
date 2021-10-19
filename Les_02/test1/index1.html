@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My program</title>
+    <style>
+        ul {
+            background: green;
+            padding: 10px
+        }
+        .greenBackground{
+            background: aqua
+        }
+    </style>
+    <script>
+        function addRow() {
+            let stationsTable = document.getElementById('stationsTable');
+            stationsTable.innerHTML = '';
+                let tr = stationsTable.insertRow();
+                tr.style.background = 'red';
+                tr.insertCell().appendChild(document.createTextNode('2'));
+                tr.insertCell().appendChild(document.createTextNode('Striy'));
+                tr.insertCell().appendChild(document.createTextNode('false'));
+        }
+        async function getStation() {
+            let response = await  fetch('http://192.168.42.172:8081/stations',{
+                method: 'GET',
+            });
+            alert(JSON.stringify(await response.json()))
+
+        }
+    </script>
+</head>
+<body>
+    <ul >
+        <li >1</li>
+        <li onclick=(alert('hi'))>2</li>
+        <li class="greenBackground">3</li>
+    </ul>
+<table id="stationsTable">
+    <tr>
+        <th>Id</th>
+        <th>Address</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Drogobych</td>
+        <td>true</td>
+    </tr>
+
+    <button onClick=(addRow())>Add</button>
+    <button onClick=(getStation())>Get data</button>
+</table>
+
+</body>
+</html>

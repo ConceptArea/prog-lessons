@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My program</title>
+</head>
+<body>
+    <script>
+        let inputArray = [1, 2, 10, 3, -145,4, 5, 256, 6];
+        function bubbleSort(array){
+            let shouldSort = false;
+            for(let i = 0; i < array.length - 1; i++){
+                let a = array[i];
+                if ( a > array[i+1] ){
+                    array[i] = array[i+1];
+                    array[i+1] = a;
+                    shouldSort = true;
+                }
+            }
+
+            if (shouldSort){
+                bubbleSort(array);
+            }
+        }
+        bubbleSort(inputArray);
+        console.log('sort', inputArray);
+    </script>
+    <ul id="stations" name="stations">
+
+    </ul>
+</body>
+</html>
