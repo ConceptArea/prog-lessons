@@ -4,6 +4,15 @@ const bp = require('body-parser');
 
 const app = express();
 
+function validate(req, res, next) {
+    const station = req.body
+    if (station.hasOwnProperty('id') && station.hasOwnProperty('address') && station.hasOwnProperty('status')) {
+        next();
+    } else {
+        res.sendStatus(400);
+    }
+}
+
 app.use(bp.json());
 
 app.get('/stations', (req, res) => {
@@ -24,7 +33,7 @@ app.get('/stations/:id', (req, res) => {
     }).catch(err => console.error(err));
 });
 
-app.post('/stations', (req, res) => {
+app.post('/stations', validate, (req, res) => {
     const station = req.body;
     fs.readFile('./database.json').then(data => {
         let stations = JSON.parse(data);
