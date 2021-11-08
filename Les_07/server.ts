@@ -5,9 +5,11 @@ import * as bp from 'body-parser';
 
 const app = express();
 
-function validate(req: Request, res: Response, next: any) {
+function validate(req: Request, res: Response, next) {
     const station = req.body;
-    if (station.hasOwnProperty('id') && station.hasOwnProperty('address') && station.hasOwnProperty('status')) {
+    if (station.hasOwnProperty('id') && station.hasOwnProperty('address') &&
+        station.hasOwnProperty('status')) {
+
         next();
     } else {
         res.sendStatus(400);
