@@ -1,0 +1,121 @@
+﻿FRONT
+
+Ng g c addstation
+
+npm install @angular/forms
+
+in addstation.ts
+
+import { Component, OnInit } from '@angular/core';
+import {FormControl, FormGroup} from "@angular/forms";
+import {StationService} from "../../services/station.service";
+import {ActivatedRoute} from "@angular/router";
+
+
+@Component({
+  selector: 'app-addstation',
+  templateUrl: './addstation.component.html',
+  styleUrls: ['./addstation.component.css']
+})
+export class AddstationComponent implements OnInit {
+
+  stationForm = new FormGroup({
+    name: new FormControl(''),
+    address: new FormControl(''),
+    status: new FormControl(true)
+  });
+
+  constructor(private stationService: StationService,
+              private route: ActivatedRoute) { }
+
+  onSubmit() {
+    this.stationService.addStation(this.stationForm.value).subscribe(st => alert(st))
+  }
+  ngOnInit(): void {
+
+  }
+
+
+}
+
+in addstation.html
+
+<form [formGroup]="stationForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Name: </label>
+    <input id="name" type="text" formControlName="name" placeholder="Введіть id"/>
+  </div>
+  <div class="form-group">
+    <label for="address">Address: </label>
+    <input id="address" type="text" formControlName="address" placeholder="Введіть адрес"/>
+  </div>
+  <div class="form-group">
+    <label for="status">Status: </label>
+  </div>
+  <div>
+    <input class="checkbox" id="status" type="checkbox" formControlName="status"/>
+  </div>
+  <div>
+   <button class="btn" type="submit">Save</button>
+  </div>
+
+</form>
+
+in station.service  add
+
+ public addStation(body: Station): Observable<Station> {
+    return this.http.post<Station>('http://127.0.0.1:8086/stations', body)
+  }
+
+
+in websocket.service add
+
+CreateStation: 'Create Station'
+
+in stationlist.component add
+
+in constructor
+
+setStation(address: string, status: boolean, id: number) {
+    this.stations.push({
+      address,
+      status,
+      id
+    });
+  }
+
+
+in ngOnInit
+
+if (message.type == MessageTypes.CreateStation){
+        this.setStation(message.payload.status, message.payload.address, message.payload.id)
+      }
+
+in app.module add
+
+import
+
+FormsModule,
+ReactiveFormsModule,
+
+BACK
+
+in service→station.ts
+
+function createStation(stationBody: Object, res: Response) {
+    const station = new Station();
+    stationProducer.sendStation(stationBody);
+    Station.merge(station, stationBody);
+    station.save().then(station => {
+        sendMessageWS({
+            type: CREATE_STATION,
+            payload: {
+                name: station.id,
+                address: station.address,
+                status: station.status
+            },
+        })
+        res.send(station)
+    }).catch(errHandler(res));
+}
+
