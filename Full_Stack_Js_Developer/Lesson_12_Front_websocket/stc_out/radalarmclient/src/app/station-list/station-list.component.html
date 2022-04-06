@@ -1,0 +1,30 @@
+<table>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Address
+    </th>
+    <th>
+      Status
+    </th>
+    <th>
+      Value
+    </th>
+  </tr>
+  <tr *ngFor= "let station of stations">
+    <td>
+      <a href="./stations/{{station?.id}}">{{station?.id}}</a>
+    </td>
+    <td>
+      {{station?.address}}
+    </td>
+    <td>
+      {{station?.status}}
+    </td>
+    <td>
+      {{station?.value}}
+    </td>
+  </tr>
+</table>

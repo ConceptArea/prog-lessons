@@ -1,0 +1,28 @@
+<!--<p>station-details works!</p>-->
+<div class="d9"><h3>ID: {{station?.id}}</h3>
+<h3>Address: {{station?.address}}</h3>
+<h3>Status: {{station?.status}}</h3>
+</div>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Value
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor= "let m of metrics" [@flyIn] = "'in'">
+    <td>
+      {{m?.id}}
+    </td>
+    <td>
+      {{m?.value}}
+    </td>
+  </tr>
+  </tbody>
+</table>
