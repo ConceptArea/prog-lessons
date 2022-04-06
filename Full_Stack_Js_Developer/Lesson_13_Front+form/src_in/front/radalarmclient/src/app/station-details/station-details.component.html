@@ -1,0 +1,24 @@
+<!--<p>station-details works!</p>-->
+<div>ID: {{station?.id}}</div>
+<div>Address: {{station?.address}}</div>
+<div>Status: {{station?.status}}</div>
+
+
+<table>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Value
+    </th>
+  </tr>
+  <tr *ngFor= "let m of metrics">
+    <td>
+      {{m?.id}}
+    </td>
+    <td>
+      {{m?.value}}
+    </td>
+  </tr>
+</table>

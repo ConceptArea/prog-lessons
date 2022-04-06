@@ -1,0 +1,22 @@
+
+<form [formGroup]="stationForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Name: </label>
+    <input id="name" type="text" formControlName="name"/>
+  </div>
+  <div class="form-group">
+    <label for="address">Address: </label>
+    <input id="address" type="text" formControlName="address"/>
+  </div>
+  <div class="form-group">
+    <label for="status">Status: </label>
+  </div>
+  <div>
+    <input class="checkbox" id="status" type="checkbox" formControlName="status"/>
+  </div>
+  <div>
+   <button class="btn" type="submit">Save</button>
+  </div>
+
+</form>
+

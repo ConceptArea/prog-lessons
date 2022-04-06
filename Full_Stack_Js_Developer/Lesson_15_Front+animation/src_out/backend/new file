@@ -1,0 +1,227 @@
+﻿Npm install typeorm
+
+npm i reflect-metadata –save  щоб декоратори правильно працювали
+
+in tsconfig.json
+
+"experimentalDecorators": true
+
+
+in script.ts
+
+import {Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMane, ManyToOne} from ‘typeorm’
+
+створити дві entity: station, metric
+
+для створення моделі таблиці бази даних використовують @Entity
+
+@Entity("station")
+export class Station {
+
+    @Column()
+    id: number;
+
+    @Column('varchar', { length: 255 })
+    address: string;
+
+    @Column('boolean')
+    status: boolean;
+}
+
+маємо створену таблицю з колонками id, address, status. Але кожна таблиця має мати колонку з первинним ключем, для цього потрібно використати декоратор @PrimaryColumn, оскільки колонка id автоінкремент, то використаємо @PrimaryGeneratedColumn
+
+
+@Entity("stations")
+export class Station extends BaseEntity {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('varchar', { length: 255 })
+    address: string;
+
+    @Column('boolean')
+    status: boolean;}
+
+
+аналогічно створюємо entity metric
+
+ @Entity("metrics")
+export class Metric extends BaseEntity {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('double')
+    value: number;
+
+    @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
+    time: Date;
+
+    
+}
+Створюємо звязки між таблицями, використовуємо @OneToMany/@ManyToOne. Потрібно описати, що метрика може мати одну станцію, але станція декілька метрик
+
+in Entity station add
+
+@OneToMany(() => Metric, metric => metric.station, {
+        onDelete: 'CASCADE'
+    })
+    metrics: Metric[];
+
+in Entity metric add
+
+@ManyToOne(() => Station, station => station.metrics, {
+        onDelete: 'CASCADE'
+    })
+
+
+Щоб описати хто головний у стосунках між таблицями використовуємо @JoinColumn
+
+
+in Entity metric add
+
+@JoinColumn({ name: 'station_id' })
+    station: Station;
+
+створюємо зв’язок з базою даних (Setting synchronize гарантує, що ваші об’єкти будуть синхронізовані з базою даних щоразу, коли ви запускаєте програму)
+
+const connection: Connection = getConnectionManager().create({ 
+    type: 'mysql', 
+    host: '127.0.0.1',
+    username: 'newradalarm',
+    password: '1111',
+    database: 'newradalarm',
+    logging: true,
+    synchronize: true,
+    entities: [Station, Metric]
+}); 
+
+connection.connect().then(() => {
+    app.listen(8083, () => {
+        console.log('Server is listening at 8082');
+    });
+}).catch(err => {
+    console.error(err);
+});;
+
+Як переглянути таблиці
+
+
+function validate(req: Request, res: Response, next) {
+    const station = req.body;
+    if (station.hasOwnProperty('address') && station.hasOwnProperty('status')) {
+        next();
+    } else {
+        res.sendStatus(400);
+    }
+}
+
+function errHandler(res) {
+    return function(err) {
+        console.error(err);
+        res.sendStatus(404);
+    }
+}
+
+using typeorm with express
+
+app.get('/stations', (req: Request, res: Response) => {
+    Station.find().then(stations => {
+        res.send(stations);
+    }).catch(errHandler(res));
+});
+
+
+app.get('/stations/:id', (req: Request, res: Response) => {
+    Station.findOne(req.params.id).then(station => {
+        if (station != null) 
+            res.send(station);
+        else 
+            res.sendStatus(404);
+    }).catch(errHandler(res));
+});
+
+
+app.post('/stations', validate, (req: Request, res: Response) => {
+    const station = Station.create(req.body);
+    Station.save(station).then(station => {
+        res.send(station);
+    }).catch(errHandler(res));
+});
+
+app.put('/stations/:id', validate, (req: Request, res: Response) => {
+    Station.findOne(req.params.id).then(station => {
+        if (station != null) {
+            Station.merge(station, req.body)
+            return station.save().then(station => {
+                res.send(station);
+            });
+        }
+        res.sendStatus(404);
+    }).catch(errHandler(res));
+});
+
+app.delete('/stations/:id', (req: Request, res: Response) => {
+    Station.findOne(req.params.id).then(station => {
+        if (station != null)
+            return station.remove().then(() => {
+                res.sendStatus(204);
+            });
+        res.sendStatus(404);
+    }).catch(errHandler(res));
+});
+
+
+app.post('/stations/:id/metrics', (req: Request, res: Response) => {
+    Station.findOne(req.params.id).then(station => {
+        if (station != null) {
+            const metric = Metric.merge(new Metric(), req.body);
+            metric.station = station;
+            return metric.save().then(metric => {
+                res.send(metric);
+            });
+        } else 
+            res.sendStatus(404);
+    }).catch(errHandler(res));
+});
+
+app.get('/stations/:id/metrics', (req: Request, res: Response) => {
+    Metric.find({ station: { id: parseInt(req.params.id) } }).then(metrics => {
+        res.send(metrics);
+    }).catch(errHandler(res));
+});
+
+QueryBuilder для Sql запитів 
+
+getOne- отримати один результат, getMany – багато елементів, getRowmany – специфічний результат (наприклад, суму)
+
+leftJoinAndSelect  The first argument is the relation you want to load and the second argument is an alias you assign to this relation's table. You can use this alias anywhere in query builder.
+
+Перший аргумент це звязок, який хочемо завантажити (у нашому випадку між метриками і станціями) другий аргумент це назва цього співвідношення
+
+app.get('/metrics', (req: Request, res: Response) => {
+    getRepository(Metric)
+        .createQueryBuilder('metric')
+        .leftJoinAndSelect('metric.station', 'station')
+        .where('station.status = true')
+        .getMany().then(metrics => {
+            console.log(metrics);
+            res.send(metrics);
+        }).catch(errHandler(res));
+});
+
+app.get('/metrics/avg', (req: Request, res: Response) => {
+    getRepository(Metric)
+        .createQueryBuilder('metric')
+        .select('avg(metric.value)')
+        .leftJoinAndSelect('metric.station', 'station')
+        .where('station.status = true')
+        .groupBy('station.id')
+        .getRawMany().then(metrics => {
+            console.log(metrics);
+            res.send(metrics);
+        }).catch(errHandler(res));
+});
+
+

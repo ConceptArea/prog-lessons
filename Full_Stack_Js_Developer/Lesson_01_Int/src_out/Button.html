@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Station</title>
+    <style>
+        body {
+            background-color: aqua;
+        }
+    </style>
+
+    <script type="application/javascript">
+
+        function myclick(){
+            var a = "2"
+            var b = "4"
+            var c = a+b
+            alert("a+b = " + c)
+            var stationUL = document.getElementById("stations");
+            var newStation = document.createElement("li");
+            newStation.innerText = "New station";
+            console.log(newStation);
+            stationUL.append(newStation);
+            var textMessage = document.getElementById("textMessage");
+            textMessage.innerText = "Other text message";
+
+        }
+    </script>
+</head>
+<body>
+    <button onclick="myclick()">GGG</button>
+    <ul id="stations">
+
+    </ul>
+    <div id="textMessage">Initial Text Message</div>
+</body>
+</html>
